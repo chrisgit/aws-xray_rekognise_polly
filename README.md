@@ -1,11 +1,11 @@
-# Amazon Web Services XRAY [![aws-badge]] 
+# Amazon Web Services XRAY ![aws-badge]
 > Example application that uses AWS services S3, Rekognition and Polly to demonstrate XRAY 
 
 ## Background
 
 Amazon's Application Load Balancer (ALB) can log all requests and store data in an S3 bucket, see http://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html
 
-However, when using many microservices it is useful to tracing the entire request throught the stack. When the Amazon ALB load balancer receives a request from a client, it adds or updates the X-Amzn-Trace-Id header before sending the request to the target. Any services or applications between the load balancer and the target can also add or update this header.
+However, when using many microservices it is useful to trace the entire request throught the stack. When the Amazon ALB load balancer receives a request from a client, it adds or updates the X-Amzn-Trace-Id header before sending the request to the target. Any services or applications between the load balancer and the target can also add or update this header.
 
 If you don't use the Amazon ALB and use a reverse proxy or other kind of load balancer is it probably a good idea to create a home grown version of the trace header. Each microservice can then update the header which means you can see which services your request went to and calculate any latency.
 
