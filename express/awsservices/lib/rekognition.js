@@ -1,3 +1,4 @@
+// Class to call the Rekognition service
 const AWS = require('aws-sdk')
 const rek = new AWS.Rekognition()
 

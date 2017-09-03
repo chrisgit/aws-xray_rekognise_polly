@@ -1,3 +1,4 @@
+// Mediator to paste together elements in the promise chain
 const buildmessage = function (imageData) {
   return new Promise(function (resolve, reject) {
     imageData.message = 'Your image contains '

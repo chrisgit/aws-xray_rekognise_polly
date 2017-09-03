@@ -1,3 +1,4 @@
+// fs.writefile converted to a promise
 const fs = require('fs')
 
 const writefile = function (imageData) {

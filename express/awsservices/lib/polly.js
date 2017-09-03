@@ -1,3 +1,4 @@
+// Class to call the Polly service
 const AWS = require('aws-sdk')
 const polly = new AWS.Polly()
 

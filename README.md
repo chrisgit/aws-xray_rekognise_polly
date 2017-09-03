@@ -15,7 +15,7 @@ When you have the request data you can perform necessary calculations using your
 
 X-Ray is a service from Amazon that will help you visualise your request through many services, for more information see https://aws.amazon.com/xray/.
 
-The good news with X-Ray is that because this is a service you do not need to host your servers on Amazon's EC2, they can be anywhere, even on premise. Communication with the X-Ray service is via the X-Ray SDK or AWS SDK so you will still need an AWS account with credentials and permissions to make calls to the X-Ray API.
+Because X-Ray is a service you do not need to host your servers on Amazon's EC2 in order to use it, the servers can be hosted anywhere, even on premise. Communication with the X-Ray service is via the X-Ray SDK or AWS SDK so you will still need an AWS account with credentials and permissions to make calls to the X-Ray API.
 
 ## How does X-Ray work?
 
@@ -26,13 +26,13 @@ Currently the X-Ray SDK is only supported for the following languages
 * Node
 * C# .Net
 
-The X-Ray SDK library needs to be included as part of your application, the exact integration is well documented on the AWS web sites; I chose Express because it is easy to add the AWS X-Ray SDK as a middleware component - something that I'm comfortable with having used Rack/Ruby.
+The X-Ray SDK library needs to be included as part of your application, the exact integration is well documented on the AWS web sites; I chose Node/Express because it is easy to add the AWS X-Ray SDK as a middleware component - something that I'm comfortable with having used similar libraries with Rack/Ruby.
 
-When using the X-Ray SDK your application will send out a UDP message to localhost (127.0.0.1). The UDP message will be picked up by an X-Ray daemon and forwarded to the X-Ray service. The X-Ray daemon does not have to be on the same host as your application and can be running in a Docker container. One thing to note, if you X-Ray daemon is not running on the host or your application and the X-Ray daemon are running in Docker containers your environment will have to override the default address for the UDP traffic by setting AWS_XRAY_DAEMON_ADDRESS; see http://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-nodejs-configuration.html and https://www.npmjs.com/package/aws-xray-sdk-core 
+When using the X-Ray SDK your application will send out a UDP message to localhost (127.0.0.1). The UDP message will be picked up by an X-Ray daemon and forwarded to the X-Ray service. The X-Ray daemon does not have to be on the same host as your application and can be running in a Docker container. One thing to note, if the X-Ray daemon is not running on the same host as your application or the X-Ray daemon is running in a Docker container your environment will have to override the default address for the UDP traffic by setting AWS_XRAY_DAEMON_ADDRESS; see http://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-nodejs-configuration.html and https://www.npmjs.com/package/aws-xray-sdk-core 
 
-The AWS X-Ray SDK needs to access AWS services so you will need an AWS account and permissions to write to X-Ray. If you are running the X-Ray SDK on an Amazon EC2 instance then you can give the instance a Role and apply the appropriate permissions, the SDK will read the instance metadata (http://169.254.169.254, see: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html) or shared credentials (i.e. .aws folder containing credentials file) or environment variables. The methods for obtaining AWS credentials (as just described) are standard for all AWS SDK's, the aws command line interface (cli) explains the options in more detail: http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html 
+The AWS X-Ray SDK needs to access AWS X-Ray service so you will need an AWS account and permissions to write to the X-Ray service. If you are running the X-Ray SDK on an Amazon EC2 instance then you can give the instance a Role and apply the appropriate permissions, the SDK will read the instance metadata (instance metadata can be obtained by querying http://169.254.169.254, see: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html) or shared credentials (i.e. a .aws folder containing credentials file) or environment variables. The methods for obtaining AWS credentials (as just described) are standard for all AWS SDK's, the aws command line interface (cli) explains the options in more detail: http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html 
 
-The quickest way to view a demonstration of X-Ray is to select X-Ray from the AWS Console and use the Getting started Node.js application which is loaded as an AWS Lambda function.
+The quickest way to view a demonstration of AWS X-Ray is to log in to the AWS console, select X-Ray and use the Getting started application which is loaded as an AWS Lambda function.
 
 This Github repo contains an equally quick way to demonstrate X-Ray which is hopefully more fun!
 
@@ -49,30 +49,34 @@ Host operating system: Windows 10 creators edition
 
 ## The demonstration
 
-The demonstration application is written in Node using the Express framework, the structure is kept intentionally simple and does not follow any particular format or standard layout for an Express application. If you want a quick start for Node and Express using a conventional file layout I'd recommend a generator program such as express-generator (see: https://expressjs.com/en/starter/generator.html) or Yeoman (see: http://yeoman.io/)
+The demonstration application is written in Node using the Express framework, see https://expressjs.com/
 
-X-Ray can trace messages through your entire microservice stack AND the AWS services, this demonstration only contains one microservice but utilises the following AWS services
+The solutions file structure is kept intentionally simple and does not follow any particular format or standard layout for an Express application. If you want a quick start for Node and Express using a conventional file layout I'd recommend a generator program such as express-generator (see: https://expressjs.com/en/starter/generator.html) or Yeoman (see: http://yeoman.io/)
+
+X-Ray can trace messages through your entire microservice stack AND the AWS services, this demonstration contains a single microservice but utilises the following AWS services
 * Simple Storage Service (S3, see https://aws.amazon.com/s3/)
 * Rekognition (see https://aws.amazon.com/rekognition/)
 * Polly (see https://aws.amazon.com/polly/)
 
 The idea is that we upload an image which is analysed by Rekognition and described in words by Polly.
 
-## Setting up and running the demostration
+## Setting up and running the demonstration
 
-After installing VirtualBox then Vagrant download the contents of this repo to your machine, open a command window and type
+After installing VirtualBox and Vagrant (in that order), download or fork the contents of this repo to your machine, open a command window and type
 
 ```
 vagrant up
 ```
 
-This will download an Ubuntu VM and install it with everything you need to get started which includes NodeJS and the AWS CLI tools, when the command prompt returns we need to do a bit of manual setup so log in to the VM with
+This will download an Ubuntu VM and install it with everything you need to get started which includes Node and the AWS CLI tools, when the command prompt returns we need to perform some manual steps, these steps could not be automated as they require YOUR AWS credentials.
+
+Log in to the VM with (NB: on a Windows machine you'll need SSH.exe, if you have git installed SSH.exe should also be installed)
 
 ```
 vagrant ssh
 ```
 
-Or use PUTTY, the host port can be obtained by opening the VirtualBox manager, selecting the VM, choose settings, Network, Advanced, port forwarding, look for the host setting for SSH port.
+Or use PUTTY, simply download PUTTY, open PUTTY, select 127.0.0.1 as the host. The host port can be obtained by opening the VirtualBox manager, selecting the VM, choose settings, Network, Advanced, port forwarding, look for the host setting for SSH port.
 
 After logging in to the VM you need to do the following
 
@@ -117,17 +121,21 @@ Click on the service map, it may take a few moments to generate but hopefully lo
 
 ![Image of xray service map](images/xray_service_map.png)
 
-If you do not have a service map then something went wrong, did you get an audio description of your image? The first port of call is to look at the output of the Node application followed by X-Ray daemon logs.
+If you do not have a service map then something went wrong, did you get an audio description of your image?
 
-The service map gives a visual overview of the calls to each service. X-Ray stores URL's to services via the traces option
+In case of failure The first port of call is to look at the output of the Node application followed by X-Ray daemon logs.
+
+The service map gives a visual overview of the calls to each service, in the case of the demonstration program that is AWS S3, Rekognition and Polly.
+
+X-Ray displays the different URL's that were used to call the services in the traces section
 
 ![Image of xray tracing](images/xray_traces.png)
 
-From the tracing page you can dig down into the detail such as response times.
+From the tracing section you can dig down into the low level detail to view response times.
 
 ![Image of xray tracing detail](images/xray_traces_detail.png)
 
-Have fun!
+Feel free to amend the program, add more microservices or AWS services but above all have fun!
 
 ## Contributing
 Please see [CONTRIBUTING.md][contributor] and read the [CODE_OF_CONDUCT.md][conduct]
