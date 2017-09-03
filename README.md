@@ -123,7 +123,7 @@ Click on the service map, it may take a few moments to generate but hopefully lo
 
 If you do not have a service map then something went wrong, did you get an audio description of your image?
 
-In case of failure The first port of call is to look at the output of the Node application followed by X-Ray daemon logs.
+In case of failure the first port of call is to look at the output of the Node application followed by X-Ray daemon logs.
 
 The service map gives a visual overview of the calls to each service, in the case of the demonstration program that is AWS S3, Rekognition and Polly.
 
