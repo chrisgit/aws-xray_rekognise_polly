@@ -30,6 +30,8 @@ The X-Ray SDK library needs to be included as part of your application, the exac
 
 When using the X-Ray SDK your application will send out a UDP message to localhost (127.0.0.1). The UDP message will be picked up by an X-Ray daemon and forwarded to the X-Ray service. The X-Ray daemon does not have to be on the same host as your application and can be running in a Docker container. One thing to note, if the X-Ray daemon is not running on the same host as your application or the X-Ray daemon is running in a Docker container your environment will have to override the default address for the UDP traffic by setting AWS_XRAY_DAEMON_ADDRESS; see http://docs.aws.amazon.com/xray/latest/devguide/xray-sdk-nodejs-configuration.html and https://www.npmjs.com/package/aws-xray-sdk-core 
 
+![Image xray daemon, stores messages and sends up batches periodically](images/xray_daemon.png)
+
 The AWS X-Ray SDK needs to access AWS X-Ray service so you will need an AWS account and permissions to write to the X-Ray service. If you are running the X-Ray SDK on an Amazon EC2 instance then you can give the instance a Role and apply the appropriate permissions, the SDK will read the instance metadata (instance metadata can be obtained by querying http://169.254.169.254, see: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html) or shared credentials (i.e. a .aws folder containing credentials file) or environment variables. The methods for obtaining AWS credentials (as just described) are standard for all AWS SDK's, the aws command line interface (cli) explains the options in more detail: http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html 
 
 The quickest way to view a demonstration of AWS X-Ray is to log in to the AWS console, select X-Ray and use the Getting started application which is loaded as an AWS Lambda function.
@@ -41,6 +43,7 @@ This Github repo contains an equally quick way to demonstrate X-Ray which is hop
 To view this demonstration you will need
 * VirtualBox which can be downloaded from here: https://www.virtualbox.org/wiki/Downloads
 * Vagrant which can be downloaded from here: https://www.vagrantup.com/downloads.html
+* An AWS account or credentials
 
 Tested with VirtualBox 5.1.26
 Tested with Vagrant 1.9.8
@@ -134,6 +137,10 @@ X-Ray displays the different URL's that were used to call the services in the tr
 From the tracing section you can dig down into the low level detail to view response times.
 
 ![Image of xray tracing detail](images/xray_traces_detail.png)
+
+The individual components that make up the request can be viewed in even greater depth.
+
+![Image of xray tracing detail](images/xray_trace_specific_request.png)
 
 Feel free to amend the program, add more microservices or AWS services but above all have fun!
 

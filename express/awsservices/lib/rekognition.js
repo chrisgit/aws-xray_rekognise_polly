@@ -4,12 +4,12 @@ const rek = new AWS.Rekognition()
 
 class ImageAnalyser {
 
-  static rekogParams(filename) {
+  static rekogParams(imageFilename) {
     let params = {
       Image: {
         S3Object: {
           Bucket: 'dev-automation',
-          Name: `rekognition/${filename}`,
+          Name: `rekognition/${imageFilename}`,
         },
       },
       MaxLabels: 10,
@@ -19,7 +19,7 @@ class ImageAnalyser {
   }
 
   static getImageLabels(imageData) {
-    let params = ImageAnalyser.rekogParams(imageData.filename)
+    let params = ImageAnalyser.rekogParams(imageData.imageFilename)
     console.log(`Analyzing file: https://s3.amazonaws.com/${params.Image.S3Object.Bucket}/${params.Image.S3Object.Name}`)
 
     return new Promise((resolve, reject) => {
@@ -28,7 +28,7 @@ class ImageAnalyser {
           console.log(`Failed analysing file ${params.Image.S3Object.Bucket}/${params.Image.S3Object.Name}`)
           return reject(new Error(err))
         }
-        data.filename = imageData.filename
+        data.imageFilename = imageData.imageFilename
         console.log('Analysis labels:', data)
         return resolve(data)
       })

@@ -60,7 +60,7 @@ app.post('/upload', upload2.array('image', 1), function(req, res, next) {
     return
   }
 
-  let imageData = {filename: req.files[0].originalname}
+  let imageData = {imageFilename: req.files[0].originalname}
   ImageAnalyser
    .getImageLabels(imageData)
    .then(Mediator.buildmessage)
@@ -71,6 +71,7 @@ app.post('/upload', upload2.array('image', 1), function(req, res, next) {
       res.download(data.AudioFilename)
     })  
     .catch((error) => {
+      console.log(error)
       res.status(500).send('Sorry, your request cannot be processed. Please try again later.')
    })
 })

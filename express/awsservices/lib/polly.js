@@ -18,7 +18,7 @@ class TextToSpeech {
 
   static getSpeech(data) {
     let params = TextToSpeech.pollyParams(data.message)
-    let filename = data.filename
+    let imageFilename = data.imageFilename
     console.log(`Resolving text: ${params.Text}`)
 
     return new Promise((resolve, reject) => {
@@ -26,7 +26,7 @@ class TextToSpeech {
         if (err) {
           return reject(new Error(err))
         }
-        data.filename = filename
+        data.imageFilename = imageFilename
         console.log(data)
         return resolve(data)
       })
