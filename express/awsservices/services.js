@@ -79,5 +79,5 @@ app.post('/upload', upload2.array('image', 1), function(req, res, next) {
 app.use(XRay.express.closeSegment())
 
 app.listen(port, function () {
-  console.log('Example app listening on port ' + port + '!')
+  console.log(`Example app listening on port ${port} !`)
 })
