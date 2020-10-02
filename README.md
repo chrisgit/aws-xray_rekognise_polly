@@ -38,18 +38,6 @@ The quickest way to view a demonstration of AWS X-Ray is to log in to the AWS co
 
 This Github repo contains an equally quick way to demonstrate X-Ray which is hopefully more fun!
 
-## Pre-requisites
-
-To view this demonstration you will need
-* VirtualBox which can be downloaded from here: https://www.virtualbox.org/wiki/Downloads
-* Vagrant which can be downloaded from here: https://www.vagrantup.com/downloads.html
-* An AWS account or credentials
-
-Tested with VirtualBox 5.1.26
-Tested with Vagrant 1.9.8
-
-Host operating system: Windows 10 creators edition
-
 ## The demonstration
 
 The demonstration application is written in Node using the Express framework, see https://expressjs.com/
@@ -63,7 +51,21 @@ X-Ray can trace messages through your entire microservice stack AND the AWS serv
 
 The idea is that we upload an image which is analysed by Rekognition and described in words by Polly.
 
-## Setting up and running the demonstration
+## Setting up the demonstration
+
+### Pre-requisites
+
+To view this demonstration you will need access to an Amazon Web Services (AWS) account and know your credentials, plus one of the following environments
+
+<details>
+ <summary>Running in VirtualBox</summary>
+
+* VirtualBox which can be downloaded from here: https://www.virtualbox.org/wiki/Downloads
+* Vagrant which can be downloaded from here: https://www.vagrantup.com/downloads.html
+* An AWS account or credentials
+
+Tested with VirtualBox 5.1.26
+Tested with Vagrant 1.9.8
 
 After installing VirtualBox and Vagrant (in that order), download or fork the contents of this repo to your machine, open a command window and type
 
@@ -97,6 +99,59 @@ npm start
 After typing aws configure you will be prompted for your AWS credentials so be ready and have them to hand.
 
 The end result should be an Express web application up and running awaiting your instructon!
+</details>
+
+<details>
+ <summary>Running locally with Docker</summary>
+
+#### Docker
+* LTS version of [Node.js](https://nodejs.org/en/download/)
+* [Docker](https://www.docker.com/get-started)
+* [Docker Compose](https://docs.docker.com/compose/)
+
+If using Docker on Windows Docker Compose is installed as part of the Docker installation.
+
+Install long term support versions of Node, Docker and Docker compose.
+
+Change to the express\awsservices folder, make sure you set the following environment variables in your shell (and export them)
+- AWS_REGION
+- AWS_ACCESS_KEY_ID
+- AWS_SECRET_ACCESS_KEY
+- BUCKET_NAME
+
+From here you have several options
+1. Run the AWS X-Ray Docker container
+```
+docker run -p 2000:2000/udp -p 2000:2000 --env AWS_REGION --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY -v $HOME/.aws:/home/app/.aws:ro amazon/aws-xray-daemon -o
+```
+and use Node to run the sample application
+```
+node server.js
+```
+
+2. Use Docker Compose to launch the AWS X-Ray daemon and the sample application
+```
+docker-compose up
+```
+
+There are more permutations should you wish such as downloading the AWS X-Ray daemon and running it locally, building a container image for the sample application etc.
+
+Building the sample app as a container
+```
+docker build -t chrisgit/xrayrekpolly
+```
+
+Running the sample app as a container
+```
+docker run -p 4000:4000 --env BUCKET_NAME --env AWS_REGION -v ${HOME}/.aws:/root/.aws:ro chrisgit/xrayrekpolly
+```
+
+When operating correctly the output from the XRay container will be similar to below (although you may have to interrogate the output with the docker logs command).
+
+![Image of XRay docker container log](images/xray_container_log.png)
+
+</details>
+
 
 ## Using the demonstration
 

@@ -1,0 +1,29 @@
+version: "3"
+services:
+  app:
+    build: .
+#    volumes:
+#      - $HOME/.aws:/home/app/.aws:ro
+    environment:
+      - AWS_REGION=eu-west-1
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - BUCKET_NAME
+    ports:
+      - 4000:4000
+  x-ray:
+    image: amazon/aws-xray-daemon
+#    volumes:
+#      - $HOME/.aws:/home/app/.aws:ro
+    environment:
+      - AWS_REGION=eu-west-1
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_XRAY_DEBUG_MODE=TRUE
+      - AWS_XRAY_CONTEXT_MISSING=LOG_ERROR
+      - AWS_XRAY_LOG_LEVEL=debug
+      - AWS_XRAY_TRACING_NAME=XRayDemo
+    ports:
+      - 2000:2000/udp
+      - 2000:2000/tcp
+    command: -o
